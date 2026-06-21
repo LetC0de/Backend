@@ -30,11 +30,17 @@ async function loadPosts() {
         postCount.textContent = posts.length;
 
         feedGrid.innerHTML = posts.reverse().map(post => `
-            <article class="post-card">
+            <article class="post-card" data-post-id="${post._id}">
                 <div class="post-image-container">
                     <img src="${post.image}" alt="Post image" class="post-image" loading="lazy">
                 </div>
-                <p class="post-caption">${escapeHtml(post.caption)}</p>
+                <div class="post-content">
+                    <p class="post-caption">${escapeHtml(post.caption)}</p>
+                    <div class="post-actions">
+                        <button onclick="editPost('${post._id}', '${escapeHtml(post.caption).replace(/'/g, "\\'")}', '${post.image}')" class="action-btn edit-btn">Edit</button>
+                        <button onclick="deletePost('${post._id}')" class="action-btn delete-btn">Delete</button>
+                    </div>
+                </div>
             </article>
         `).join('');
 
@@ -49,6 +55,121 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+async function deletePost(postId) {
+    if (!confirm('Are you sure you want to delete this post?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/delete-post/${postId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete post');
+        }
+
+        const postCard = document.querySelector(`[data-post-id="${postId}"]`);
+        if (postCard) {
+            postCard.remove();
+        }
+
+        const postCount = document.getElementById('postCount');
+        const currentCount = parseInt(postCount.textContent) || 0;
+        postCount.textContent = Math.max(0, currentCount - 1);
+
+        const feedGrid = document.getElementById('feedGrid');
+        if (feedGrid.children.length === 0) {
+            feedGrid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 3rem; grid-column: 1/-1;">No posts yet. Create your first post!</p>';
+        }
+
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete post. Please try again.');
+    }
+}
+
+function editPost(postId, caption, imageUrl) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Post</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <label class="form-label">Caption</label>
+                    <textarea id="editCaption" rows="4" maxlength="500">${caption}</textarea>
+                    <div class="char-count">
+                        <span id="editCharCount">${caption.length}</span> / 500
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button onclick="closeModal()" class="cancel-btn">Cancel</button>
+                    <button onclick="updatePost('${postId}')" class="save-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const textarea = document.getElementById('editCaption');
+    const charCount = document.getElementById('editCharCount');
+    textarea.addEventListener('input', () => {
+        charCount.textContent = textarea.value.length;
+    });
+    textarea.focus();
+}
+
+function closeModal() {
+    const modal = document.querySelector('.modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+async function updatePost(postId) {
+    const caption = document.getElementById('editCaption').value.trim();
+
+    if (!caption) {
+        alert('Caption cannot be empty');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/update-post/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ caption })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update post');
+        }
+
+        const data = await response.json();
+
+        const postCard = document.querySelector(`[data-post-id="${postId}"]`);
+        if (postCard) {
+            const captionElement = postCard.querySelector('.post-caption');
+            if (captionElement) {
+                captionElement.textContent = caption;
+            }
+        }
+
+        closeModal();
+
+    } catch (error) {
+        console.error('Error updating post:', error);
+        alert('Failed to update post. Please try again.');
+    }
 }
 
 function initCreatePage() {
