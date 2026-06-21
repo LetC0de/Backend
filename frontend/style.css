@@ -211,9 +211,7 @@ body {
 .action-btn {
     flex: 1;
     padding: 0.5rem;
-    border: 1px solid var(--border);
-    background: var(--bg-white);
-    color: var(--text-primary);
+    border: none;
     font-size: 0.85rem;
     font-weight: 500;
     border-radius: 4px;
@@ -221,19 +219,22 @@ body {
     transition: all 0.2s;
 }
 
-.action-btn:hover {
-    background: var(--bg-main);
+.edit-btn {
+    background: var(--accent);
+    color: white;
 }
 
 .edit-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    background: var(--accent-hover);
+}
+
+.delete-btn {
+    background: var(--error);
+    color: white;
 }
 
 .delete-btn:hover {
-    border-color: var(--error);
-    color: var(--error);
-    background: #fef2f2;
+    background: #dc2626;
 }
 
 .modal {
