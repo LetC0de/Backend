@@ -50,7 +50,7 @@ app.get("/posts", async (req,res) => {
 //delete post api
 app.delete("/delete-post/:id", async (req,res) => {
 
-    const {id} = req.params.id
+    const {id} = req.params;
 
     const post = await postmodel.findByIdAndDelete(id)
 
@@ -61,7 +61,26 @@ app.delete("/delete-post/:id", async (req,res) => {
 })
 
 
+// update post api
+app.put("/update-post/:id", async (req,res)=>{
+
+    const {id} = req.params;
+
+    const {caption, title} = req.body;
 
 
+    const post = await postmodel.findByIdAndUpdate(
+        id,
+        {caption, title},
+        {new:true}
+    );
+
+
+    res.status(200).json({
+        message:"post updated successfully",
+        post
+    });
+
+});
 
 module.exports = app
