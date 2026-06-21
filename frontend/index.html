@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="grain-overlay"></div>
+
+    <nav class="nav">
+        <h1 class="logo">FEED</h1>
+        <a href="create.html" class="create-btn">
+            <span class="plus">+</span>
+            <span>NEW POST</span>
+        </a>
+    </nav>
+
+    <main class="container">
+        <div class="feed-header">
+            <h2 class="feed-title">LATEST</h2>
+            <div class="feed-count" id="postCount">—</div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>LOADING FEED...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <p>Failed to load feed. Please try again.</p>
+            <button onclick="loadPosts()" class="retry-btn">RETRY</button>
+        </div>
+
+        <div class="feed-grid" id="feedGrid"></div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        loadPosts();
+    </script>
+</body>
+</html>

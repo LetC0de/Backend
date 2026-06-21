@@ -1,11 +1,14 @@
 const express = require("express")
 const multer = require("multer")
+const path = require("path")
 const postmodel = require("./models/post.model")
 const uploadfile = require("./services/storage.service")
 
 
 const app = express();
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, '../../frontend')));
 
 
 const upload = multer({storage : multer.memoryStorage()})
