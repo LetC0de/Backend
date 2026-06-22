@@ -4,9 +4,13 @@ const router = express.Router();
 
 router.post("/create", (req,res) => {
     
-    console.log(req.body)
+    const token = req.cookies.token; // post tabhi jab token user k pas ho 
 
-    console.log(req.cookies)
+    if (!token) {
+        return res.status(401).json({
+            message : "Unauthorized"
+        })
+    }
 
     res.send("post created successfully")
 
