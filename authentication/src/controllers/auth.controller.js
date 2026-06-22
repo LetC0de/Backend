@@ -10,6 +10,16 @@ async function registerUser (req, res){
         email,
         password
     })
+
+    const token = jwt.sign({
+        id : user._id
+    }, process.env.JWT_SECRET)
+
+    res.status(201).json({
+        message : "User registered successfully",
+        user,
+        token
+    })
 }
 
 
