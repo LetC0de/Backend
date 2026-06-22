@@ -1,9 +1,9 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-
+const UserModel = require("../models/user.model")
 const router = express.Router();
 
-router.post("/create", (req,res) => {
+router.post("/create", async (req,res) => {
     
     const token = req.cookies.token; // post tabhi jab token user k pas ho 
 
@@ -14,7 +14,14 @@ router.post("/create", (req,res) => {
     }
 
     try{
-        jwt.verify(token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+        const user = await UserModel.findOne({
+            _id : decoded.id 
+        })
+
+        console.log(user)
+
     } catch (err) {
         return res.status(401).json({
             message : "Token is invalid"
