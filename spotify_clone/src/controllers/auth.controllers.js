@@ -22,7 +22,7 @@ async function registerUser(req,res){
         })
     } 
 
-    const hash = bcrypt.hash(password, 10)
+    const hash = await bcrypt.hash(password, 10)
 
     const user = await userModel.create({
         username,
