@@ -77,6 +77,14 @@ async function createAlbum(req,res){
 
         const { title , musicId } = req.body;
 
+        const titleExists = await albumModel.findOne({title});
+
+        if (titleExists){
+            return res.status(400).json({
+                message : "Album title already exists"
+            })
+        }
+
         const album = await albumModel.create({
             
             title,

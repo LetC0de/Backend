@@ -6,7 +6,8 @@ const albumSchema = new mongoose.Schema({
 
     title : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     musics: [{
         type : mongoose.Schema.Types.ObjectId,
