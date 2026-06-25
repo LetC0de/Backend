@@ -62,4 +62,16 @@ async function createAlbum(req,res){
 }
 
 
-module.exports = { createMusic, createAlbum };
+async function getAllMusic(req,res){
+    
+    const music = await musicModel.find();
+
+    res.status(200).json({
+        message : "All music fetch successfully",
+        music : music
+    })
+}
+
+
+
+module.exports = { createMusic, createAlbum, getAllMusic };
