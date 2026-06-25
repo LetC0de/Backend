@@ -64,7 +64,7 @@ async function createAlbum(req,res){
 
 async function getAllMusic(req,res){
     
-    const music = await musicModel.find();
+    const music = await musicModel.find().populate("artist","username");
 
     res.status(200).json({
         message : "All music fetch successfully",
